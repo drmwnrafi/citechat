@@ -576,6 +576,8 @@ files = [
 
 [package.dependencies]
 huggingface-hub = "*"
+nvidia-cublas-cu12 = {version = "*", optional = true, markers = "extra == \"cuda\""}
+nvidia-cuda-runtime-cu12 = {version = "*", optional = true, markers = "extra == \"cuda\""}
 py-cpuinfo = ">=9.0.0,<10.0.0"
 
 [package.extras]
@@ -2023,6 +2025,28 @@ files = [
     {file = "numpy-1.25.2-pp39-pypy39_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4c3abc71e8b6edba80a01a52e66d83c5d14433cbcd26a40c329ec7ed09f37901"},
     {file = "numpy-1.25.2-pp39-pypy39_pp73-win_amd64.whl", hash = "sha256:1b9735c27cea5d995496f46a8b1cd7b408b3f34b6d50459d9ac8fe3a20cc17bf"},
     {file = "numpy-1.25.2.tar.gz", hash = "sha256:fd608e19c8d7c55021dffd43bfe5492fab8cc105cc8986f813f8c3c048b38760"},
+]
+
+[[package]]
+name = "nvidia-cublas-cu12"
+version = "12.2.5.6"
+description = "CUBLAS native runtime libraries"
+optional = false
+python-versions = ">=3"
+files = [
+    {file = "nvidia_cublas_cu12-12.2.5.6-py3-none-manylinux1_x86_64.whl", hash = "sha256:f448d8db463f9a2c7dd9a1e607c0961d3e95f825b86839c5882f7d073d406df0"},
+    {file = "nvidia_cublas_cu12-12.2.5.6-py3-none-win_amd64.whl", hash = "sha256:b65d8b6e198056e4fafe998ae4e819e0be8e25554a724560a4cfd0602c5aa65b"},
+]
+
+[[package]]
+name = "nvidia-cuda-runtime-cu12"
+version = "12.2.140"
+description = "CUDA Runtime native Libraries"
+optional = false
+python-versions = ">=3"
+files = [
+    {file = "nvidia_cuda_runtime_cu12-12.2.140-py3-none-manylinux1_x86_64.whl", hash = "sha256:acb9cb7e44594a3512533497ea790d9f0b0e399abcc888584c157d1ffa080e41"},
+    {file = "nvidia_cuda_runtime_cu12-12.2.140-py3-none-win_amd64.whl", hash = "sha256:3f35d098455efb847acdc5e6345b2943c6d570296d1b265adb97a500ce3ab941"},
 ]
 
 [[package]]
@@ -4012,4 +4036,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "7ac950e944ca53405db0290efb326a8df8bfb4460fba93b3f8c7e9d62c41ff1a"
+content-hash = "4f88602b1b8b81d5f3f41806c7a8e11621f02b9cc1e8a24d2edf6fd3d4ab6ee0"

@@ -1,7 +1,4 @@
-from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
-from langchain.memory.chat_message_histories.in_memory import ChatMessageHistory
-import os
 
 
 def setup_dbqa(llm, vdb, memory):
