@@ -21,7 +21,7 @@ Install all library using `poetry`
  poetry init
  poetry install
 ```
-Put BardAPI tokens on `config.yaml`, check [how to get Bard tokens](https://github.com/drmwnrafi/citechat/edit/main/README.md#how-to-get-bard-tokens)
+Put BardAPI tokens on `config.yaml`, check [how to get Bard tokens](https://github.com/drmwnrafi/citechat#how-to-get-bard-tokens)
 ```
 # Bard Tokens
 __Secure-1PSID : "Put your token here"
