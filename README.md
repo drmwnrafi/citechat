@@ -21,13 +21,18 @@ Install all library using `poetry`
  poetry init
  poetry install
 ```
-Put BardAPI tokens on `config.yaml`
+Put BardAPI tokens on `config.yaml`, check [how to get Bard tokens](https://github.com/drmwnrafi/citechat/edit/main/README.md#how-to-get-bard-tokens)
 ```
 # Bard Tokens
 __Secure-1PSID : "Put your token here"
 __Secure-1PSIDCC : "Put your token here"
 __Secure-1PSIDTS : "Put your token here"
 ```
+To run the app
+```
+poetry run python app.py
+```
+`CTRL + C` in your terminal to close the app and the port
 ## How to get Bard tokens
 1. Go to [Google Bard](https://bard.google.com/chat)
 2. Right click, click __Inspect__ or `Ctrl + Shift + C`
