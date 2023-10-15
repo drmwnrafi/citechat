@@ -11,7 +11,7 @@ CiteChat is an research assistant web app designed to simplify the academic jour
 
 ## Installation
 
-Install all library using `poetry`
+Install all library using python venv or conda venv
 ```
  cd citechat
  pip install -r requirements.txt
