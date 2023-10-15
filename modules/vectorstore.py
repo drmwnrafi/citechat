@@ -26,7 +26,7 @@ def add_docs(paths, embeddings):
     if os.path.exists(vdb_path):
         vdb = FAISS.load_local(vdb_path, embeddings)
 
-        if paths == ".": 
+        if paths == ".":
             return vdb
         
         elif len(paths)>1:

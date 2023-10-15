@@ -11,15 +11,10 @@ CiteChat is an research assistant web app designed to simplify the academic jour
 
 ## Installation
 
-Install Poetry if you haven't already installed it
-```bash
- pip install poetry
-```
 Install all library using `poetry`
 ```
  cd citechat
- poetry init
- poetry install
+ pip install -r requirements.txt
 ```
 Put BardAPI tokens on `config.yaml`, check [how to get Bard tokens](https://github.com/drmwnrafi/citechat#how-to-get-bard-tokens)
 ```

@@ -83,7 +83,6 @@ def options(acc, large_lang):
 
 def respond(message, history):
   global llm, vector_db
-  print(vector_db, type(vector_db))
   if vector_db is not None:
     llm_dqa = utils.setup_dbqa(llm, vector_db, memory)
     output = llm_dqa({'question': message})
