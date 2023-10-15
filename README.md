@@ -11,7 +11,7 @@ CiteChat is an research assistant web app designed to simplify the academic jour
 
 ## Installation
 
-Install all library using python venv or conda venv
+Install all library using `python venv` or `conda venv`
 ```
  cd citechat
  pip install -r requirements.txt
@@ -25,7 +25,7 @@ __Secure-1PSIDTS : "Put your token here"
 ```
 To run the app
 ```
-poetry run python app.py
+python app.py
 ```
 `CTRL + C` in your terminal to close the app and the port
 ## How to get Bard tokens
