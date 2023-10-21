@@ -5,7 +5,7 @@ import os
 
 def load_file(paths:list) :
     documents = []
-    if os.path.isdir(paths):
+    if os.path.isdir(str(paths)):
         loader = PyPDFDirectoryLoader(paths)
         documents = loader.load()
         return documents
