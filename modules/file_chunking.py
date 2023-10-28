@@ -4,6 +4,12 @@ from langchain.document_loaders import PyPDFDirectoryLoader
 import os
 
 def load_file(paths:list) :
+    """
+    params:
+    paths:list = pdfs local path
+
+    return 
+    """
     documents = []
     if os.path.isdir(str(paths)):
         loader = PyPDFDirectoryLoader(paths)

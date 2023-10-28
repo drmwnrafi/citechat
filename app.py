@@ -1,11 +1,14 @@
 import torch
 from langchain.memory import ConversationBufferWindowMemory
+import ast
 import os
 from tkinter import Tk, filedialog
 import modules.vectorstore as vs
 import modules.utils as utils
 import modules.llms as llms
-import ast
+import modules.search_papers as papers
+import modules.keyword_extraction as key
+import modules.bibtex_convert as convert
 import gradio as gr
 import warnings
 import yaml
@@ -96,6 +99,23 @@ def respond(message, history):
   history.append((message, bot_message)) 
   return "", history
 
+def respond_literature(message, history):
+   global llm, vector_db
+   semantics, arxiv = papers.push_to_documents(message)
+   embeddings = vs.load_embeddings(config.get("embeddings"))
+   vector_db = vs.add_list_docs(semantics, embeddings)
+   if vector_db is not None:
+    llm_dqa = utils.setup_dbqa(llm, vector_db, memory)
+    output = llm_dqa({'question': message})
+    bot_message = output['answer'] + "\n\n**Source :**\n"
+    for document in output['source_documents']:
+      source = convert.format_APA(document.metadata['source'])
+      bot_message += f"- {source}\n"
+    history.append((message, bot_message)) 
+    return "", history
+
+
+
 title_md = '# <p align="center">💬 CiteChat</p>'
 
 desc = f"CiteChat is an innovative research assistant application designed to simplify the academic journey. By turning PDF documents into a treasure trove of knowledge. CiteChat functions as a dynamic chatbot, researchers simply upload a PDF and ask questions about the PDF. CiteChat by default, uses internet-connected BARD or locally run LLAMA2 to get responses. With CiteChat, I hope your research becomes more accessible and efficient than ever before." 
@@ -132,7 +152,6 @@ with gr.Blocks(title="CiteChat", theme=theme) as demo:
           done_options.click(fn = options, inputs = [acc, large_lang], outputs = [error_box])
       
     with gr.Tab("Local Papers"):
-
       with gr.Row(variant='panel', equal_height=True):
         with gr.Column(scale=97):
           data_type = gr.Radio(choices=["Files", "Folder"], value="Files", label="Select Files or Directory")
@@ -144,7 +163,7 @@ with gr.Blocks(title="CiteChat", theme=theme) as demo:
           image_browse_btn.click(on_browse, inputs=data_type, outputs=input_path, show_progress="hidden")
           done_vectorstr_btn.click(create_vdb, inputs=input_path, outputs=info_textbox)
    
-      chatbot = gr.Chatbot(avatar_images=(os.path.join(os.getcwd(), "logos", "user_logo.svg"), os.path.join(os.getcwd(), "logos", "logo.svg")),
+      chatbot = gr.Chatbot(label="Local Papers", avatar_images=(os.path.join(os.getcwd(), "logos", "user_logo.svg"), os.path.join(os.getcwd(), "logos", "logo.svg")),
                          bubble_full_width=False,show_copy_button=True, height=600)
       with gr.Row():
         msg = gr.Textbox(scale=99,
@@ -153,12 +172,23 @@ with gr.Blocks(title="CiteChat", theme=theme) as demo:
                           show_label=False,)
         msg.submit(respond, [msg, chatbot], [msg, chatbot])
         with gr.Column(scale=1):
-          butt = gr.Button("Sent 📤", size="lg")
+          button_send = gr.Button("Sent 📤", size="lg")
           clear = gr.ClearButton([msg, chatbot], value="Clear 🗑️", variant="primary",size="lg")
-          butt.click(respond, [msg, chatbot], [msg, chatbot])
+          button_send.click(respond, [msg, chatbot], [msg, chatbot])
 
     with gr.Tab("Literature Search"):
-       gr.Textbox("COMING SOON...",show_label=False, container=False)
+      chatbot_literature = gr.Chatbot(label = "Literature Search", avatar_images=(os.path.join(os.getcwd(), "logos", "user_logo.svg"), os.path.join(os.getcwd(), "logos", "logo.svg")),
+                         bubble_full_width=False,show_copy_button=True, height=600)
+      with gr.Row():
+        msg_literature = gr.Textbox(scale=99,
+                          container=False,
+                          placeholder="Prompt",
+                          show_label=False,)
+        msg_literature.submit(respond_literature, [msg_literature, chatbot_literature], [msg_literature, chatbot_literature])
+        with gr.Column(scale=1):
+          button_literature = gr.Button("Sent 📤", size="lg")
+          clear_literature = gr.ClearButton([msg_literature, chatbot_literature], value="Clear 🗑️", variant="primary",size="lg")
+          button_literature.click(respond_literature, [msg_literature, chatbot_literature], [msg_literature, chatbot_literature])
 
 if __name__=="__main__":
   try:

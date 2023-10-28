@@ -58,3 +58,17 @@ def add_docs(paths, embeddings):
             msg = "Build vectorstore successfull"
             
     return vdb
+
+def add_list_docs(docs, embeddings):
+    vdb_path =os.path.join(os.getcwd(), "vectorstore/faiss")
+    
+    if os.path.exists(vdb_path):
+        vdb = FAISS.load_local(vdb_path, embeddings)
+        vdb.add_documents(docs) 
+        vdb.save_local(vdb_path)
+        msg = "Docs Uploaded"
+    else :
+        vdb =  build_vectorstore(docs, embeddings)
+        msg = "Build vectorstore successfull"
+            
+    return vdb
