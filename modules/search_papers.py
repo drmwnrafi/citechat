@@ -9,9 +9,9 @@ from langchain.schema import Document
 
 def semanticscholars_search(query, first_year = None, last_year=None):
     options = Options()
-    # options.add_argument("--headless")
-    # options.add_experimental_option("excludeSwitches", ["enable-automation"])
-    # options.add_experimental_option("useAutomationExtension", False)
+    options.add_argument("--headless")
+    options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    options.add_experimental_option("useAutomationExtension", False)
 
     driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
     query = query.replace(' ', '+')
@@ -21,8 +21,7 @@ def semanticscholars_search(query, first_year = None, last_year=None):
         url = f"https://www.semanticscholar.org/search?year%5B0%5D={str(last_year)}&year%5B1%5D={str(first_year)}&q={query}&sort=relevance&pdf=true"
     
     driver.get(url)
-    time.sleep(2)
-
+    time.sleep(3)
     for count in range(1, 3):
         try:
             driver.execute_script(f'document.querySelector("#main-content > div.flex-item.flex-item--width-66.flex-item__left-column > div.result-page > div:nth-child({count}) > div.tldr-abstract-replacement.text-truncator > button").click()')
@@ -33,19 +32,24 @@ def semanticscholars_search(query, first_year = None, last_year=None):
     
     results = soup.select(".cl-paper-row.serp-papers__paper-row.paper-v2-cue.paper-row-normal")
     scholar_results = []
-    
-    for result in results[:2]:    
-        title = result.select_one(".cl-paper-title").text
+
+    if len(results) > 2:
+        for_loop = results[:2]
+    elif len(results)< 2:
+        for_loop = results 
+
+    for result in for_loop:    
+        # title = result.select_one(".cl-paper-title").text
+
+        try:
+            pdf_link = result.find("div", class_ ="flex-row paper-badge-list").find('a')['href']
+        except:
+            pdf_link = 'None'
         
         try:
             overview = result.find("div", class_="cl-paper-abstract").text.replace('TLDR', '').replace('Collapse', '')
         except :
             overview = result.find("div", class_="tldr-abstract-replacement text-truncator").text.replace('TLDR', '').replace('Collapse', '')
-        
-        try:
-            pdf_link = result.select_one(".flex-row.paper-badge-list a")['href']
-        except:
-            pdf_link = 'None'
         
         cite_button = driver.find_element("xpath","//button[contains(., 'Cite')]")
         driver.execute_script("arguments[0].click();", cite_button)
@@ -55,9 +59,8 @@ def semanticscholars_search(query, first_year = None, last_year=None):
         bibtex_str = soup_cite.find('cite', class_='formatted-citation--style-bibtex').text.strip()
     
         scholar_results.append({
-            "title" : title if title is not None else 'None',
             "abstract" : overview if overview is not None else 'None',
-            "pdf" : pdf_link if pdf_link is not None else 'None',
+            "pdf" : pdf_link,
             "bibtex" : bibtex_str if bibtex_str is not None else 'None',
         })
     
@@ -76,25 +79,25 @@ def arxiv_search(query):
         authors_string = ' and '.join(author_names)
 
         results.append({
-            "summary": result.summary,
+            "abstract": result.summary,
+            "pdf" : result.pdf_url,
             "bibtex": f'''@article{{{{
                 title={{{result.title}}},
                 author={{{authors_string}}},
                 year={{{result.published.year}}},
                 url={{{result.pdf_url}}},
-                journal={{arXiv}}
-            }}}}'''
+                journal={{arXiv}}}}}}'''
         })
     return results
 
-def push_to_documents(query, num_references:int = 2):
-    semantics_results = semanticscholars_search(query)
-    arxiv_results = arxiv_search(query)
-    ss = []
-    axv = []
-    
-    for i in range(num_references):
-        ss.append(Document(page_content=semantics_results[i]['abstract'], metadata=dict(source = semantics_results[i]['bibtex'])))
-        axv.append(Document(page_content=arxiv_results[i]['summary'], metadata=dict(source = arxiv_results[i]['bibtex'])))
+def push_to_documents(query):
+    try:
+        results = semanticscholars_search(query)
+    except :
+        results = arxiv_search(query)
 
-    return ss, axv
+    output = []
+    
+    for i in range(len(results)):
+        output.append(Document(page_content=results[i]['abstract'], metadata=dict(source = results[i]['bibtex'])))
+    return output

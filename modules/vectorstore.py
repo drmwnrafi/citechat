@@ -44,9 +44,6 @@ def add_docs(paths, embeddings):
                 vdb.add_documents(chunks) 
                 vdb.save_local(vdb_path)
                 msg = "PDFs Uploaded"
-
-            elif out_of_vdb == []:    
-                msg = "All PDFs already exist"
     else :
         if paths == ".": 
             msg = "Please Input Your Path"
@@ -54,9 +51,7 @@ def add_docs(paths, embeddings):
         else :
             docs = fc.load_file(paths)
             chunks = fc.chunking_data(docs)
-            vdb =  build_vectorstore(chunks, embeddings)
-            msg = "Build vectorstore successfull"
-            
+            vdb =  build_vectorstore(chunks, embeddings)            
     return vdb
 
 def add_list_docs(docs, embeddings):
@@ -64,11 +59,13 @@ def add_list_docs(docs, embeddings):
     
     if os.path.exists(vdb_path):
         vdb = FAISS.load_local(vdb_path, embeddings)
-        vdb.add_documents(docs) 
-        vdb.save_local(vdb_path)
-        msg = "Docs Uploaded"
+        out_of_vdb = []
+        for doc in docs:
+            if doc not in vdb.docstore._dict.values():
+                out_of_vdb.append(doc)
+        if out_of_vdb != []:
+            vdb.add_documents(out_of_vdb) 
+            vdb.save_local(vdb_path)
     else :
-        vdb =  build_vectorstore(docs, embeddings)
-        msg = "Build vectorstore successfull"
-            
+        vdb =  build_vectorstore(docs, embeddings)            
     return vdb

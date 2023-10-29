@@ -7,7 +7,6 @@ import modules.vectorstore as vs
 import modules.utils as utils
 import modules.llms as llms
 import modules.search_papers as papers
-import modules.keyword_extraction as key
 import modules.bibtex_convert as convert
 import gradio as gr
 import warnings
@@ -100,20 +99,20 @@ def respond(message, history):
   return "", history
 
 def respond_literature(message, history):
-   global llm, vector_db
-   semantics, arxiv = papers.push_to_documents(message)
-   embeddings = vs.load_embeddings(config.get("embeddings"))
-   vector_db = vs.add_list_docs(semantics, embeddings)
-   if vector_db is not None:
-    llm_dqa = utils.setup_dbqa(llm, vector_db, memory)
-    output = llm_dqa({'question': message})
-    bot_message = output['answer'] + "\n\n**Source :**\n"
-    for document in output['source_documents']:
-      source = convert.format_APA(document.metadata['source'])
-      bot_message += f"- {source}\n"
-    history.append((message, bot_message)) 
-    return "", history
-
+  global llm, vector_db
+  query = utils.get_query_search(message)
+  papers_content = papers.push_to_documents(query)
+  embeddings = vs.load_embeddings(config.get("embeddings"))
+  vector_db = vs.add_list_docs(papers_content, embeddings)
+  if vector_db is not None:
+   llm_dqa = utils.setup_dbqa(llm, vector_db, memory)
+   output = llm_dqa({'question': message})
+   bot_message = output['answer'] + "\n\n**Source :**\n"
+   for document in output['source_documents']:
+     source = convert.format_APA(document.metadata['source'])
+     bot_message += f"- {source}\n"
+   history.append((message, bot_message)) 
+   return "", history
 
 
 title_md = '# <p align="center">💬 CiteChat</p>'

@@ -28,4 +28,4 @@ def extract_keyword(text:str):
     """
     rake_nltk_var.extract_keywords_from_text(text)
     keyword_extracted = rake_nltk_var.get_ranked_phrases()
-    return " AND ".join(keyword_extracted)
+    return " ".join(keyword_extracted)
