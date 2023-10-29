@@ -6,7 +6,7 @@
 CiteChat is an research assistant web app designed to simplify the academic journey. By turning PDF documents into a treasure trove of knowledge. CiteChat functions as a chatbot, researchers simply upload a PDF and ask questions about the PDF. CiteChat by default, uses internet-connected BARD or locally (optional) run LLAMA-2 to get responses. With CiteChat, I hope your research becomes more accessible and efficient than ever before.
 
 <div align="center">
-  <img src="https://github.com/drmwnrafi/citechat/blob/main/logos/flow.png" alt="Logo" width="500">
+  <img src="https://github.com/drmwnrafi/citechat/blob/main/logos/flow.png" alt="Logo" width="700">
 </div>
 
 ## Installation
