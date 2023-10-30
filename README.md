@@ -1,17 +1,23 @@
 
 # 💬 CiteChat
 <div align="center">
-  <img src="https://github.com/drmwnrafi/citechat/raw/main/logos/logo.svg" alt="Logo" width="200">
+  <img src="https://github.com/drmwnrafi/citechat/blob/main/logos/citechat_transparent.png" alt="Logo" width="800">
 </div>
-CiteChat is an research assistant web app designed to simplify the academic journey. By turning PDF documents into a treasure trove of knowledge. CiteChat functions as a chatbot, researchers simply upload a PDF and ask questions about the PDF. CiteChat by default, uses internet-connected BARD or locally (optional) run LLAMA-2 to get responses. With CiteChat, I hope your research becomes more accessible and efficient than ever before.
+<br>
+CiteChat is a helper for your academic journey, offering a unique and interactive approach to assisting with research. It turns PDF documents into knowledge resources and operates as a chatbot. Researchers can easily upload PDFs or search through Arxiv and SemanticScholar, then submit questions to CiteChat. By default, it uses an internet connection to Google Bard, but you also have the option of Llama-2 7B GGML (2 bits quantize) which can be run locally. With CiteChat, I hope your research becomes not only more accessible but also efficient.
+<br>
+<br>
 
 <div align="center">
   <img src="https://github.com/drmwnrafi/citechat/blob/main/logos/flow.png" alt="Logo" width="700">
 </div>
+<br>
+
+>If there's any error or bugs, feel free to [open a discussion](https://github.com/drmwnrafi/citechat/issues) to report them.
 
 ## Installation
 
-Install all library using `python venv` or `conda venv`
+Install all library using `python venv`
 ```
  cd citechat
  pip install -r requirements.txt
@@ -37,4 +43,4 @@ python app.py
 ## Acknowledgements
 
  - [BardAPI](https://github.com/dsdanielpark/Bard-API)
-
+   
