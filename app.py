@@ -105,14 +105,21 @@ def respond_literature(message, history):
   embeddings = vs.load_embeddings(config.get("embeddings"))
   vector_db = vs.add_list_docs(papers_content, embeddings)
   if vector_db is not None:
-   llm_dqa = utils.setup_dbqa(llm, vector_db, memory)
-   output = llm_dqa({'question': message})
-   bot_message = output['answer'] + "\n\n**Source :**\n"
-   for document in output['source_documents']:
-     source = convert.format_APA(document.metadata['source'])
-     bot_message += f"- {source}\n"
-   history.append((message, bot_message)) 
-   return "", history
+    llm_dqa = utils.setup_dbqa(llm, vector_db, memory)
+    output = llm_dqa({'question': message})
+    bot_message = output['answer'] + "\n\n**Source :**\n"
+    for document in output['source_documents']:
+      source = convert.format_APA(document.metadata['source'])
+      try :
+          pdf = document.metadata['pdf_link']
+          if pdf == 'None':
+             bot_message += f"- {source}\n"
+          else :
+            bot_message += f"- {source}\n **PDF : {pdf}**\n"
+      except :
+          bot_message += f"- {source}\n"
+    history.append((message, bot_message)) 
+    return "", history
 
 
 title_md = '# <p align="center">💬 CiteChat</p>'

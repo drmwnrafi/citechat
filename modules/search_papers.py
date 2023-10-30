@@ -33,8 +33,8 @@ def semanticscholars_search(query, first_year = None, last_year=None):
     results = soup.select(".cl-paper-row.serp-papers__paper-row.paper-v2-cue.paper-row-normal")
     scholar_results = []
 
-    if len(results) > 2:
-        for_loop = results[:2]
+    if len(results) > 3:
+        for_loop = results[:3]
     elif len(results)< 2:
         for_loop = results 
 
@@ -69,7 +69,7 @@ def semanticscholars_search(query, first_year = None, last_year=None):
 def arxiv_search(query):
     search = arxiv.Search(
        query = query,
-       max_results = 2,
+       max_results = 3,
        sort_by = arxiv.SortCriterion.Relevance,
        )
     
@@ -99,5 +99,5 @@ def push_to_documents(query):
     output = []
     
     for i in range(len(results)):
-        output.append(Document(page_content=results[i]['abstract'], metadata=dict(source = results[i]['bibtex'])))
+        output.append(Document(page_content=results[i]['abstract'], metadata=dict(source = results[i]['bibtex'], pdf_link = results[i]['pdf'])))
     return output
