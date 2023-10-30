@@ -169,7 +169,7 @@ with gr.Blocks(title="CiteChat", theme=theme) as demo:
           image_browse_btn.click(on_browse, inputs=data_type, outputs=input_path, show_progress="hidden")
           done_vectorstr_btn.click(create_vdb, inputs=input_path, outputs=info_textbox)
    
-      chatbot = gr.Chatbot(label="Local Papers", avatar_images=(os.path.join(os.getcwd(), "logos", "user_logo.svg"), os.path.join(os.getcwd(), "logos", "logo.svg")),
+      chatbot = gr.Chatbot(label="Local Papers", avatar_images=(os.path.join(os.getcwd(), "logos", "user_logo.png"), os.path.join(os.getcwd(), "logos", "logo.png")),
                          bubble_full_width=False,show_copy_button=True, height=600)
       with gr.Row():
         msg = gr.Textbox(scale=99,
@@ -183,7 +183,7 @@ with gr.Blocks(title="CiteChat", theme=theme) as demo:
           button_send.click(respond, [msg, chatbot], [msg, chatbot])
 
     with gr.Tab("Literature Search"):
-      chatbot_literature = gr.Chatbot(label = "Literature Search", avatar_images=(os.path.join(os.getcwd(), "logos", "user_logo.svg"), os.path.join(os.getcwd(), "logos", "logo.svg")),
+      chatbot_literature = gr.Chatbot(label = "Literature Search", avatar_images=(os.path.join(os.getcwd(), "logos", "user_logo.png"), os.path.join(os.getcwd(), "logos", "logo.png")),
                          bubble_full_width=False,show_copy_button=True, height=600)
       with gr.Row():
         msg_literature = gr.Textbox(scale=99,
@@ -198,7 +198,7 @@ with gr.Blocks(title="CiteChat", theme=theme) as demo:
 
 if __name__=="__main__":
   try:
-    demo.launch(favicon_path=os.path.join(os.getcwd(), "logos", "icon.ico"))
+    demo.launch(favicon_path=os.path.join(os.getcwd(), "logos", "logo.ico"), inbrowser = True)
   except KeyboardInterrupt:
     demo.clear()
     demo.close()
