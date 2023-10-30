@@ -15,6 +15,9 @@ CiteChat is a helper for your academic journey, offering a unique and interactiv
 
 >If there's any error or bugs, feel free to [open a discussion](https://github.com/drmwnrafi/citechat/issues) to report them.
 
+## Demo
+![](https://github.com/drmwnrafi/citechat/blob/main/media/demo.gif)
+
 ## Installation
 
 Install all library using `python venv`
@@ -34,7 +37,9 @@ To run the app
 python app.py
 ```
 `CTRL + C` in your terminal to close the app and the port
+
 ## How to get Bard tokens
+![](https://github.com/drmwnrafi/citechat/blob/main/media/bard_cookies.gif)
 1. Go to [Google Bard](https://bard.google.com/chat)
 2. Right click, click __Inspect__ or `Ctrl + Shift + C`
 3. Click `>>` symbol and select `Application`
