@@ -12,7 +12,6 @@ import gradio as gr
 import warnings
 import yaml
 
-
 warnings.filterwarnings('ignore', category = UserWarning, module = 'gradio')
 
 with open(os.path.join(os.getcwd(), "config.yaml"), "r") as yaml_file:
@@ -90,9 +89,20 @@ def respond(message, history):
     output = llm_dqa({'question': message})
     bot_message = output['answer'] + "\n\n**Source :**\n"
     for document in output['source_documents']:
-      source = document.metadata.get('source', 'N/A')
-      page = document.metadata.get('page', 'N/A')
-      bot_message += f"- {source}, **page:** {page}\n"
+      try :
+          source = convert.format_APA(document.metadata['source'])
+          pdf = document.metadata['pdf_link']
+          if pdf == 'None':
+             bot_message += f"- {source}\n"
+          else :
+            bot_message += f"- {source}\n **PDF : {pdf}**\n"
+      except :
+          source = document.metadata.get('source', 'N/A')
+          page = document.metadata.get('page', 'N/A')
+          if source is not None and page is not None:
+            bot_message += f"- {source}, **page:** {page}\n"
+          else :
+            bot_message += f"- {source}\n"
   else : 
      bot_message = llm(message)
   history.append((message, bot_message)) 
@@ -109,22 +119,27 @@ def respond_literature(message, history):
     output = llm_dqa({'question': message})
     bot_message = output['answer'] + "\n\n**Source :**\n"
     for document in output['source_documents']:
-      source = convert.format_APA(document.metadata['source'])
       try :
+          source = convert.format_APA(document.metadata['source'])
           pdf = document.metadata['pdf_link']
           if pdf == 'None':
              bot_message += f"- {source}\n"
           else :
             bot_message += f"- {source}\n **PDF : {pdf}**\n"
       except :
-          bot_message += f"- {source}\n"
+          source = document.metadata.get('source', 'N/A')
+          page = document.metadata.get('page', 'N/A')
+          if source is not None and page is not None:
+            bot_message += f"- {source}, **page:** {page}\n"
+          else :
+            bot_message += f"- {source}\n"
     history.append((message, bot_message)) 
     return "", history
 
 
 title_md = '# <p align="center">💬 CiteChat</p>'
 
-desc = f"CiteChat is an innovative research assistant application designed to simplify the academic journey. By turning PDF documents into a treasure trove of knowledge. CiteChat functions as a dynamic chatbot, researchers simply upload a PDF and ask questions about the PDF. CiteChat by default, uses internet-connected BARD or locally run LLAMA2 to get responses. With CiteChat, I hope your research becomes more accessible and efficient than ever before." 
+desc = f"⚠️ Warning : \n - If you push multiple PDFs, it may take a while. \n - If you want to run Literature Search feature, make sure you have Google Chrome installed.\n- If you select Google Bard as LLM, make sure you have an internet connection." 
 
 theme = gr.themes.Soft(primary_hue='gray', secondary_hue = 'gray', font=[gr.themes.GoogleFont("Montserrat"), "ui-sans-serif", "sans-serif"])
 
