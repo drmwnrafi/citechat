@@ -11,6 +11,7 @@ import modules.bibtex_convert as convert
 import gradio as gr
 import warnings
 import yaml
+import modules.download_pdf as dload
 
 warnings.filterwarnings('ignore', category = UserWarning, module = 'gradio')
 
@@ -19,6 +20,8 @@ with open(os.path.join(os.getcwd(), "config.yaml"), "r") as yaml_file:
 
 path   = None
 vector_db = None
+list_msg = []
+pdf_out = []
 memory = ConversationBufferWindowMemory(memory_key="chat_history", k=2, output_key='answer')
 
 llm = llms.lang_model(model_name='google bard')
@@ -109,7 +112,7 @@ def respond(message, history):
   return "", history
 
 def respond_literature(message, history):
-  global llm, vector_db
+  global llm, vector_db, pdf_out, filenames
   query = utils.get_query_search(message)
   papers_content = papers.push_to_documents(query)
   embeddings = vs.load_embeddings(config.get("embeddings"))
@@ -120,12 +123,13 @@ def respond_literature(message, history):
     bot_message = output['answer'] + "\n\n**Source :**\n"
     for document in output['source_documents']:
       try :
-          source = convert.format_APA(document.metadata['source'])
-          pdf = document.metadata['pdf_link']
-          if pdf == 'None':
+          source, title = convert.format_APA(document.metadata['source'])
+          pdf_link = document.metadata['pdf_link']
+          pdf_out.append({'link' : pdf_link, 'name' : title})
+          if pdf_link == 'None':
              bot_message += f"- {source}\n"
           else :
-            bot_message += f"- {source}\n **PDF : {pdf}**\n"
+            bot_message += f"- {source}\n **PDF : {pdf_link}**\n"
       except :
           source = document.metadata.get('source', 'N/A')
           page = document.metadata.get('page', 'N/A')
@@ -136,11 +140,23 @@ def respond_literature(message, history):
     history.append((message, bot_message)) 
     return "", history
 
+def vote(data: gr.LikeData, msg):
+  global list_msg, pdf_out
+  dir_path = os.path.join(os.getcwd(), "pdfs")
+  embeddings = vs.load_embeddings(config.get("embeddings"))
+  if data.liked and msg not in list_msg:
+    list_msg.append(msg)
+    pdf_out = [item for item in pdf_out if item['link'] != 'None']
+    for pdf in pdf_out:
+      dload.pdf_from_url(pdf['link'], dir_path, pdf['name'][:-1]+".pdf")
+    vs.add_docs(dir_path, embeddings)
+    pdf_out = []
+    return "PDF downloaded and push to vectorstore"
+  else :
+    return "Do nothing 😛"
 
 title_md = '# <p align="center">💬 CiteChat</p>'
-
-desc = f"⚠️ Warning : \n - If you push multiple PDFs, it may take a while. \n - If you want to run Literature Search feature, make sure you have Google Chrome installed.\n- If you select Google Bard as LLM, make sure you have an internet connection." 
-
+desc = f"⚠️ Info : \n - If you push multiple PDFs, it may take a while to process and push to vectorstore. \n - If you want to run Literature Search feature, make sure you have Google Chrome installed.\n- If you select Google Bard as LLM, make sure you have an internet connection." 
 theme = gr.themes.Soft(primary_hue='gray', secondary_hue = 'gray', font=[gr.themes.GoogleFont("Montserrat"), "ui-sans-serif", "sans-serif"])
 
 with gr.Blocks(title="CiteChat", theme=theme) as demo:
@@ -198,6 +214,7 @@ with gr.Blocks(title="CiteChat", theme=theme) as demo:
           button_send.click(respond, [msg, chatbot], [msg, chatbot])
 
     with gr.Tab("Literature Search"):
+      literature_info = gr.Textbox(label="Proccess Info", info = "👍🏻 Like : Push PDF reference to vectorstore 👎🏻 Dislike : Do nothing")
       chatbot_literature = gr.Chatbot(label = "Literature Search", avatar_images=(os.path.join(os.getcwd(), "logos", "user_logo.png"), os.path.join(os.getcwd(), "logos", "logo.png")),
                          bubble_full_width=False,show_copy_button=True, height=600)
       with gr.Row():
@@ -206,6 +223,7 @@ with gr.Blocks(title="CiteChat", theme=theme) as demo:
                           placeholder="Prompt",
                           show_label=False,)
         msg_literature.submit(respond_literature, [msg_literature, chatbot_literature], [msg_literature, chatbot_literature])
+        chatbot_literature.like(vote, inputs=[msg_literature], outputs=[literature_info])
         with gr.Column(scale=1):
           button_literature = gr.Button("Sent 📤", size="lg")
           clear_literature = gr.ClearButton([msg_literature, chatbot_literature], value="Clear 🗑️", variant="primary",size="lg")
@@ -213,7 +231,9 @@ with gr.Blocks(title="CiteChat", theme=theme) as demo:
 
 if __name__=="__main__":
   try:
-    demo.launch(favicon_path=os.path.join(os.getcwd(), "logos", "logo.ico"), inbrowser = True)
+    demo.launch(favicon_path=os.path.join(os.getcwd(), "logos", "logo.ico"), 
+                # inbrowser = True
+                )
   except KeyboardInterrupt:
     demo.clear()
     demo.close()

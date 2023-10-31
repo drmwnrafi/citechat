@@ -29,13 +29,15 @@ def add_docs(paths, embeddings):
         if paths == ".":
             return vdb
         
-        elif len(paths)>1:
+        elif len(paths) > 1 or isinstance(paths, list):
             file_on_vdb = get_files_vdb(vdb)
-            paths = fc.extract_dir(paths)
+            
+            if not isinstance(paths, list):
+                paths = fc.extract_dir(paths)
 
             out_of_vdb = []
             for file_name in paths:
-                if file_name not in file_on_vdb:
+                if file_name.split('/')[-1] not in file_on_vdb:
                     out_of_vdb.append(file_name)
 
             if out_of_vdb != []:
@@ -43,7 +45,11 @@ def add_docs(paths, embeddings):
                 chunks = fc.chunking_data(docs)
                 vdb.add_documents(chunks) 
                 vdb.save_local(vdb_path)
-                msg = "PDFs Uploaded"
+                print("PDF Uploaded")
+
+            else :
+                print("PDF already exist")
+            
     else :
         if paths == ".": 
             msg = "Please Input Your Path"

@@ -24,4 +24,4 @@ def format_APA(bibtex:str):
     volume = f" {volume_match.group(1)}." if volume_match is not None else ''
     
     formatted_citation = f"{authors}{year}{title}{italic_start}{journal}{volume}{italic_end}"
-    return formatted_citation
+    return formatted_citation, title

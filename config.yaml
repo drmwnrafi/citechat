@@ -4,6 +4,6 @@ model_file: "llama-2-7b-chat.ggmlv3.q2_K.bin"
 embeddings : "sentence-transformers/all-MiniLM-L6-v2"
 
 # Bard Tokens
-__Secure-1PSID   : "Put your token here"
-__Secure-1PSIDCC : "Put your token here"
-__Secure-1PSIDTS : "Put your token here"
+__Secure-1PSID   : "cggwuAAMDzcpC9HgWo84kkhe3oXosFQVV7f8LuCvl3Ov4F7b1rymjkn4P16t_22sGdJQAg."
+__Secure-1PSIDCC : "ACA-OxMfNUIgdg_NdJrcJHCELDbYM9G44G4b0B0pe9HzCKrqC_aRdaYTkUzUS0h3-rbOwNSI-7s"
+__Secure-1PSIDTS : "sidts-CjEBNiGH7njJGNWdczA3NzaoiWO26xBmvMPSkA9ybIPfcDexclyk5xeXmZk7NfB2smx0EAA"
