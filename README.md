@@ -9,7 +9,7 @@ CiteChat is a helper for your academic journey, offering a unique and interactiv
 <br>
 
 <div align="center">
-  <img src="https://github.com/drmwnrafi/citechat/blob/main/logos/flow.png" alt="Logo" width="700">
+  <img src="https://github.com/drmwnrafi/citechat/blob/main/logos/citechat_flow.png" alt="Logo" width="1000">
 </div>
 <br>
 
